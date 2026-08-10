@@ -11,10 +11,10 @@ RUN npm install --legacy-peer-deps
 # Copiamos el resto del código
 COPY . .
 
-# Omitimos la compilación de producción para evitar el problema del SSR
-# y levantamos el servidor de Vite directamente que funciona 100%
+# Compilamos la aplicación para producción (SSR)
+RUN npm run build
 
-EXPOSE 80
+EXPOSE 3000
 
-# Usamos el servidor de desarrollo de Vite bindeado al puerto 80
-CMD ["npm", "run", "dev", "--", "--host", "0.0.0.0", "--port", "80"]
+# Iniciamos el servidor de producción (vinxi start)
+CMD ["npm", "run", "start"]
