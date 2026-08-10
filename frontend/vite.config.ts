@@ -7,7 +7,11 @@ import viteReact from '@vitejs/plugin-react'
 const config = defineConfig({
   resolve: { tsconfigPaths: true },
   plugins: [
-    tanstackStart(),
+    tanstackStart({
+      server: {
+        preset: 'netlify'
+      }
+    }),
     viteReact(),
   ],
   server: {
