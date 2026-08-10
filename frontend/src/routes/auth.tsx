@@ -13,10 +13,14 @@ function AuthPage() {
       <div className="w-full max-w-md">
         <Tabs aria-label="Opciones de Autenticación" fullWidth size="lg">
           <Tab key="login" title="Iniciar Sesión">
-            <LoginFormComponent />
+            <div className="w-full h-full">
+              <LoginFormComponent />
+            </div>
           </Tab>
           <Tab key="register" title="Crear Cuenta">
-            <RegisterFormComponent />
+            <div className="w-full h-full">
+              <RegisterFormComponent />
+            </div>
           </Tab>
         </Tabs>
       </div>
