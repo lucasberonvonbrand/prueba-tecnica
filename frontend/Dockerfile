@@ -11,10 +11,11 @@ RUN npm install --legacy-peer-deps
 # Copiamos el resto del código
 COPY . .
 
-# Compilamos la aplicación para producción (SSR)
-RUN npm run build
+# Pre-optimizamos dependencias pesadas (HeroUI, framer-motion) para evitar que
+# el servidor Vite se quede sin memoria RAM al arrancar en el entorno gratuito de Render
+RUN npx vite optimize
 
-EXPOSE 3000
+EXPOSE 80
 
-# Iniciamos el servidor de producción (vinxi start)
-CMD ["npm", "run", "start"]
+# Usamos el servidor de Vite que funcionó bien, pero ahora ya está pre-optimizado
+CMD ["npm", "run", "dev", "--", "--host", "0.0.0.0", "--port", "80"]
