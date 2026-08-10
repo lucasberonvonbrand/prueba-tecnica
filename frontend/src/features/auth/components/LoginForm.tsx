@@ -36,7 +36,6 @@ export const LoginFormComponent = () => {
   });
 
   return (
-    <>
       <Card className="w-full max-w-md mx-auto mt-10">
         <CardHeader className="flex flex-col gap-1 items-center">
           <h2 className="text-2xl font-bold">Iniciar Sesión</h2>
@@ -112,23 +111,22 @@ export const LoginFormComponent = () => {
             />
           </form>
         </CardBody>
-      </Card>
 
-      <Modal isOpen={!!errorMsg} onClose={() => setErrorMsg('')}>
-        <ModalContent>
-          <ModalHeader className="text-danger font-bold flex gap-2 items-center">
-            Ocurrió un error
-          </ModalHeader>
-          <ModalBody>
-            <p>{errorMsg}</p>
-          </ModalBody>
-          <ModalFooter>
-            <Button color="primary" onPress={() => setErrorMsg('')}>
-              Entendido
-            </Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
-    </>
+        <Modal isOpen={!!errorMsg} onClose={() => setErrorMsg('')}>
+          <ModalContent>
+            <ModalHeader className="text-danger font-bold flex gap-2 items-center">
+              Ocurrió un error
+            </ModalHeader>
+            <ModalBody>
+              <p>{errorMsg}</p>
+            </ModalBody>
+            <ModalFooter>
+              <Button color="primary" onPress={() => setErrorMsg('')}>
+                Entendido
+              </Button>
+            </ModalFooter>
+          </ModalContent>
+        </Modal>
+      </Card>
   );
 };

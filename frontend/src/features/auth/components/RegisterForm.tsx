@@ -61,7 +61,6 @@ export const RegisterFormComponent = () => {
   });
 
   return (
-    <>
       <Card className="w-full max-w-md mx-auto mt-10">
         <CardHeader className="flex flex-col gap-1 items-center">
           <h2 className="text-2xl font-bold">Crear Cuenta</h2>
@@ -159,23 +158,22 @@ export const RegisterFormComponent = () => {
             />
           </form>
         </CardBody>
-      </Card>
 
-      <Modal isOpen={modalState.isOpen} onClose={() => setModalState({ ...modalState, isOpen: false })}>
-        <ModalContent>
-          <ModalHeader className={`${modalState.type === 'error' ? 'text-danger' : 'text-success'} font-bold flex gap-2 items-center`}>
-            {modalState.title}
-          </ModalHeader>
-          <ModalBody>
-            <p>{modalState.message}</p>
-          </ModalBody>
-          <ModalFooter>
-            <Button color="primary" onPress={() => setModalState({ ...modalState, isOpen: false })}>
-              Entendido
-            </Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
-    </>
+        <Modal isOpen={modalState.isOpen} onClose={() => setModalState({ ...modalState, isOpen: false })}>
+          <ModalContent>
+            <ModalHeader className={`${modalState.type === 'error' ? 'text-danger' : 'text-success'} font-bold flex gap-2 items-center`}>
+              {modalState.title}
+            </ModalHeader>
+            <ModalBody>
+              <p>{modalState.message}</p>
+            </ModalBody>
+            <ModalFooter>
+              <Button color="primary" onPress={() => setModalState({ ...modalState, isOpen: false })}>
+                Entendido
+              </Button>
+            </ModalFooter>
+          </ModalContent>
+        </Modal>
+      </Card>
   );
 };
