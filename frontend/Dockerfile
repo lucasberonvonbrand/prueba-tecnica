@@ -8,9 +8,6 @@ COPY package.json package-lock.json* ./
 # Instalamos dependencias limpiamente
 RUN npm install --legacy-peer-deps
 
-# Forzar instalación de h3 para evitar el error de toResponse en SSR
-RUN npm install h3@1.14.0
-
 # Copiamos el resto del código
 COPY . .
 
