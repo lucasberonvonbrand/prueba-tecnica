@@ -7,11 +7,11 @@
     "#/*": "./src/*"
   },
   "scripts": {
-    "dev": "vite dev --port 5173",
+    "dev": "vinxi dev",
     "generate-routes": "tsr generate",
-    "build": "vite build",
-    "preview": "vite preview",
-    "start": "node dist/server/server.js",
+    "build": "vinxi build",
+    "preview": "vinxi preview",
+    "start": "vinxi start",
     "lint": "eslint",
     "format": "prettier --write . && eslint --fix",
     "check": "prettier --check ."
