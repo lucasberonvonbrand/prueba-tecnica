@@ -11,10 +11,10 @@ RUN npm install --legacy-peer-deps
 # Copiamos el resto del código
 COPY . .
 
-# Compilamos la aplicación para producción (esto soluciona el problema de interfaz invisible)
-RUN npm run build
+# Compilamos la aplicación para producción usando vinxi (el motor de TanStack Start)
+RUN npx vinxi build
 
 EXPOSE 80
 
-# Arrancamos el servidor de producción (consume poquísima RAM, excelente para Render)
-CMD ["npm", "run", "start"]
+# Arrancamos el servidor de producción con vinxi
+CMD ["npx", "vinxi", "start"]
