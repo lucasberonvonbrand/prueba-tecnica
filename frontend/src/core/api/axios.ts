@@ -6,8 +6,8 @@ const isServer = typeof window === 'undefined';
 
 export const api = axios.create({
   baseURL: isServer 
-    ? (process.env.API_URL || 'http://localhost:3000/api') 
-    : (import.meta.env.VITE_API_URL || 'http://localhost:3000/api'), 
+    ? ((process.env.API_URL || 'http://localhost:3000') + '/api') 
+    : ((import.meta.env.VITE_API_URL || 'http://localhost:3000') + '/api'), 
   withCredentials: true, // Permite enviar cookies de sesión (necesario para Better Auth en modo web)
 });
 
