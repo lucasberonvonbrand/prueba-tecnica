@@ -60,7 +60,6 @@
   "overrides": {
     "@tanstack/router-utils": "1.132.0",
     "@tanstack/start-plugin-core": "1.132.0",
-    "@tanstack/start-server-functions-handler": "1.132.0",
-    "h3": "^2.0.0-beta.4"
+    "@tanstack/start-server-functions-handler": "1.132.0"
   }
 }
