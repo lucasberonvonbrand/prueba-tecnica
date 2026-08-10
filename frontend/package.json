@@ -59,6 +59,7 @@
   "overrides": {
     "@tanstack/router-utils": "1.132.0",
     "@tanstack/start-plugin-core": "1.132.0",
-    "@tanstack/start-server-functions-handler": "1.132.0"
+    "@tanstack/start-server-functions-handler": "1.132.0",
+    "h3": "latest"
   }
 }

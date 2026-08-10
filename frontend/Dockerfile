@@ -11,11 +11,10 @@ RUN npm install --legacy-peer-deps
 # Copiamos el resto del código
 COPY . .
 
-# Pre-optimizamos dependencias pesadas (HeroUI, framer-motion) para evitar que
-# el servidor Vite se quede sin memoria RAM al arrancar en el entorno gratuito de Render
-RUN npx vite optimize
+# Compilamos la aplicación para producción (esto soluciona el problema de interfaz invisible)
+RUN npm run build
 
 EXPOSE 80
 
-# Usamos el servidor de Vite que funcionó bien, pero ahora ya está pre-optimizado
-CMD ["npm", "run", "dev", "--", "--host", "0.0.0.0", "--port", "80"]
+# Arrancamos el servidor de producción (consume poquísima RAM, excelente para Render)
+CMD ["npm", "run", "start"]
