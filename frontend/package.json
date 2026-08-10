@@ -35,7 +35,7 @@
     "react-dom": "^18.3.1",
     "vinxi": "^0.5.1",
     "zod": "3.23.8",
-    "h3": "^1.14.0"
+    "h3": "^2.0.0-beta.4"
   },
   "devDependencies": {
     "@tanstack/router-cli": "1.132.0",
@@ -61,6 +61,6 @@
     "@tanstack/router-utils": "1.132.0",
     "@tanstack/start-plugin-core": "1.132.0",
     "@tanstack/start-server-functions-handler": "1.132.0",
-    "h3": "^1.14.0"
+    "h3": "^2.0.0-beta.4"
   }
 }
