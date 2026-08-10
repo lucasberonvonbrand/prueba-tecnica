@@ -31,7 +31,6 @@
     "axios": "^1.7.9",
     "better-auth": "latest",
     "framer-motion": "^11.18.1",
-    "h3": "latest",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "vinxi": "^0.5.1",
@@ -60,7 +59,6 @@
   "overrides": {
     "@tanstack/router-utils": "1.132.0",
     "@tanstack/start-plugin-core": "1.132.0",
-    "@tanstack/start-server-functions-handler": "1.132.0",
-    "h3": "latest"
+    "@tanstack/start-server-functions-handler": "1.132.0"
   }
 }
