@@ -13,6 +13,7 @@ const config = defineConfig({
   server: {
     port: 5173,
     strictPort: true,
+    allowedHosts: true, // Permite que Vite responda a dominios externos como Render
     proxy: {
       '/api': {
         target: 'http://backend:3000',
