@@ -1,0 +1,43 @@
+version: '3.8'
+
+services:
+  mongodb:
+    image: mongo:7.0
+    container_name: mongodb_gestor
+    ports:
+      - "27017:27017"
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=secret
+    volumes:
+      - mongodb_data:/data/db
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: gestor_frontend
+    environment:
+      - API_URL=http://backend:3000/api
+    ports:
+      - "4000:80"
+    depends_on:
+      - mongodb
+      - backend
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: gestor_backend
+    ports:
+      - "3000:3000"
+    environment:
+      - MONGO_URI=mongodb://root:secret@mongodb:27017/gestor_articulos?authSource=admin
+      - BETTER_AUTH_SECRET=super-secret-key-for-dev
+      - BETTER_AUTH_URL=http://localhost:3000
+    depends_on:
+      - mongodb
+
+volumes:
+  mongodb_data:

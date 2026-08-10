@@ -1,0 +1,25 @@
+name: Deploy Backend to Render
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'backend/**'
+      - '.github/workflows/backend.yml'
+
+jobs:
+  deploy:
+    name: Trigger Render Deployment
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to Render
+        env:
+          deploy_url: ${{ secrets.RENDER_DEPLOY_HOOK_URL }}
+        run: |
+          if [ -z "$deploy_url" ]; then
+            echo "La variable RENDER_DEPLOY_HOOK_URL no está configurada en los secrets de GitHub."
+            exit 1
+          fi
+          echo "Llamando al Webhook de Render para iniciar el despliegue..."
+          curl -X POST -d {} "$deploy_url"
