@@ -16,7 +16,13 @@ const app = new Hono();
 // Middlewares globales
 app.use('*', logger());
 app.use('*', cors({
-  origin: ['http://localhost:5173', 'http://localhost:4000', 'http://backend:3000'], 
+  origin: (origin) => {
+    // Permitir localhost para desarrollo y render.com para producción
+    if (origin && (origin.includes('localhost') || origin.includes('.onrender.com'))) {
+      return origin;
+    }
+    return 'http://localhost:5173'; // Fallback
+  },
   credentials: true,
 }));
 
