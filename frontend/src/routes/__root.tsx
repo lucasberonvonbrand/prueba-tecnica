@@ -7,7 +7,7 @@ import {
   useRouterState,
   useLocation,
 } from '@tanstack/react-router'
-import { Navbar, NavbarBrand, NavbarContent, NavbarItem, Button, HeroUIProvider } from '@heroui/react'
+import { Navbar, NavbarBrand, NavbarContent, NavbarItem, NavbarMenuToggle, NavbarMenu, NavbarMenuItem, Button, HeroUIProvider } from '@heroui/react'
 import { useState } from 'react'
 import { useAuth } from '@/features/auth/hooks/useAuth'
 import type { QueryClient } from '@tanstack/react-query'
@@ -27,6 +27,7 @@ function RootComponent() {
   const isAuthPage = location.pathname === '/auth';
   const isNavigating = useRouterState({ select: (s) => s.status === 'pending' });
   const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const handleLogout = async () => {
     try {
@@ -41,7 +42,7 @@ function RootComponent() {
   };
 
   return (
-    <div className="min-h-screen bg-[#FDFBF7] text-foreground font-sans flex flex-col relative">
+    <div className="min-h-screen bg-[#FDFBF7] text-foreground font-sans flex flex-col relative overflow-x-hidden">
       {(isNavigating || isLoggingOut) && (
         <>
           <div className="fixed top-0 left-0 right-0 h-1.5 bg-primary animate-pulse z-[100]" />
@@ -50,13 +51,26 @@ function RootComponent() {
       )}
 
       <HeroUIProvider className="flex flex-col flex-grow">
-        <Navbar maxWidth="xl" className="bg-[#F2E8D8] py-2 border-b border-[#E0D2BC]">
-          <NavbarBrand>
-            <Link to="/" className="font-serif font-black text-primary text-3xl tracking-tight">El Periódico.</Link>
-          </NavbarBrand>
+        <Navbar 
+          maxWidth="xl" 
+          className="bg-[#F2E8D8] py-2 border-b border-[#E0D2BC]"
+          isMenuOpen={isMenuOpen}
+          onMenuOpenChange={setIsMenuOpen}
+        >
+          <NavbarContent justify="start" className="gap-2 sm:gap-4">
+            {isAuthenticated && (
+              <NavbarMenuToggle 
+                aria-label={isMenuOpen ? "Cerrar menú" : "Abrir menú"}
+                className="sm:hidden text-stone-700" 
+              />
+            )}
+            <NavbarBrand>
+              <Link to="/" className="font-serif font-black text-primary text-2xl sm:text-3xl tracking-tight">El Periódico.</Link>
+            </NavbarBrand>
+          </NavbarContent>
           
           {isAuthenticated && (
-            <NavbarContent className="sm:flex gap-8" justify="center">
+            <NavbarContent className="hidden sm:flex gap-8" justify="center">
               <NavbarItem>
                 <Link 
                   to="/" 
@@ -90,7 +104,7 @@ function RootComponent() {
                   color="primary" 
                   variant="bordered" 
                   size="sm"
-                  className="rounded-full font-bold"
+                  className="rounded-full font-bold text-xs sm:text-sm px-3 sm:px-4"
                   isLoading={isLoggingOut}
                   isDisabled={isLoggingOut || isNavigating}
                   onPress={handleLogout}
@@ -104,10 +118,10 @@ function RootComponent() {
                   color="primary" 
                   variant="bordered" 
                   size="sm"
-                  className="rounded-full font-bold"
+                  className="rounded-full font-bold text-xs sm:text-sm px-3 sm:px-4"
                   isDisabled={isNavigating || isLoggingOut}
                 >
-                  ← Volver a artículos
+                  ← Volver
                 </Button>
               ) : (
                 <Button 
@@ -116,7 +130,7 @@ function RootComponent() {
                   color="primary" 
                   variant="bordered" 
                   size="sm"
-                  className="rounded-full font-bold"
+                  className="rounded-full font-bold text-xs sm:text-sm px-3 sm:px-4"
                   isDisabled={isNavigating || isLoggingOut}
                 >
                   Iniciar sesión
@@ -124,6 +138,29 @@ function RootComponent() {
               )}
             </NavbarItem>
           </NavbarContent>
+
+          {isAuthenticated && (
+            <NavbarMenu className="bg-[#F2E8D8]/95 backdrop-blur-md pt-6 gap-4">
+              <NavbarMenuItem>
+                <Link 
+                  to="/" 
+                  onClick={() => setIsMenuOpen(false)}
+                  className="w-full text-lg font-bold text-stone-800 py-2 border-b border-stone-300 flex"
+                >
+                  Artículos
+                </Link>
+              </NavbarMenuItem>
+              <NavbarMenuItem>
+                <Link 
+                  to="/dashboard" 
+                  onClick={() => setIsMenuOpen(false)}
+                  className="w-full text-lg font-bold text-stone-800 py-2 border-b border-stone-300 flex"
+                >
+                  Mi Dashboard
+                </Link>
+              </NavbarMenuItem>
+            </NavbarMenu>
+          )}
         </Navbar>
         
         <main className="flex-grow flex flex-col">

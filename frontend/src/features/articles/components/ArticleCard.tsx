@@ -20,7 +20,7 @@ export const ArticleCard = ({ article, onView, onEdit, onDelete, isDeleting }: A
             <img src={article.coverImageUrl} alt={article.title} className="w-24 h-24 object-cover rounded mt-2 mb-2" />
           )}
         </div>
-        <div className="flex gap-2 shrink-0">
+        <div className="flex flex-wrap gap-2 shrink-0 w-full sm:w-auto justify-end">
           <Button size="sm" variant="flat" color="primary" onPress={() => onView(article)}>Ver</Button>
           <Button size="sm" variant="flat" color="primary" onPress={() => onEdit(article)}>Editar</Button>
           <Button size="sm" variant="solid" color="danger" onPress={() => onDelete(article.id)} isLoading={isDeleting}>Eliminar</Button>

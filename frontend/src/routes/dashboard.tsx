@@ -50,8 +50,8 @@ function DashboardPage() {
   const { data: session, isPending: isSessionLoading } = authClient.useSession();
 
   return (
-    <div className="p-8 max-w-4xl mx-auto">
-      <div className="mb-8">
+    <div className="p-4 sm:p-8 max-w-4xl mx-auto w-full min-w-0">
+      <div className="mb-6 sm:mb-8">
         <h1 className="text-3xl font-bold">Dashboard</h1>
         {isSessionLoading || !session ? (
           <Skeleton className="w-48 h-5 rounded-full mt-2" />
@@ -60,7 +60,7 @@ function DashboardPage() {
         )}
       </div>
 
-      <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100 mt-8">
+      <div className="bg-white p-4 sm:p-6 rounded-xl shadow-sm border border-gray-100 mt-6 sm:mt-8 min-w-0 overflow-hidden">
         <ArticleCrud />
       </div>
     </div>
