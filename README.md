@@ -149,8 +149,7 @@ docker compose up -d --build
 
 4️⃣ **¡Listo!**
 
-- El **Frontend** estará disponible en: `http://localhost:5173`
-- El **Backend** estará corriendo en: `http://localhost:3000`
+- La **Aplicación Web** estará disponible en: [http://localhost:4000](http://localhost:4000)
 - La base de datos (MongoDB) estará inicializada y un contenedor especial se encargará de **poblarla con datos de prueba** automáticamente para que no tengas que crear cuentas manualmente.
 
 > **Credenciales de prueba generadas por el Seed:**
