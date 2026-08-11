@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Button, Card, CardBody, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure, Pagination, Skeleton } from '@heroui/react';
-import { getMyArticles, createArticle, updateArticle, deleteArticle, type Article } from '../services/article.service';
+import { getMyArticles, createArticle, updateArticle, deleteArticle, type Article, type CreateArticlePayload, type UpdateArticlePayload } from '../services/article.service';
 import { useState } from 'react';
 import { ArticleCard } from './ArticleCard';
 import { ArticleFormModal } from './ArticleFormModal';
@@ -36,7 +36,7 @@ export const ArticleCrud = () => {
   });
 
   const updateMutation = useMutation({
-    mutationFn: (data: { id: string; payload: any }) => updateArticle(data.id, data.payload),
+    mutationFn: (data: { id: string; payload: UpdateArticlePayload }) => updateArticle(data.id, data.payload),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['my-articles'] });
       queryClient.invalidateQueries({ queryKey: ['public-articles'] });
@@ -55,7 +55,7 @@ export const ArticleCrud = () => {
     },
   });
 
-  const handleFormSubmit = async (value: any) => {
+  const handleFormSubmit = async (value: CreateArticlePayload) => {
     try {
       if (editingArticle) {
         await updateMutation.mutateAsync({ id: editingArticle.id, payload: value });

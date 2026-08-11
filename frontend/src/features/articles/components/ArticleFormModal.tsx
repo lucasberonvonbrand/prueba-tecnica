@@ -4,11 +4,13 @@ import type { Article } from '../services/article.service';
 import { useEffect } from 'react';
 import { articleSchema } from '../types/article.schema';
 
+import { z } from 'zod';
+
 interface ArticleFormModalProps {
   isOpen: boolean;
   onOpenChange: (isOpen: boolean) => void;
   editingArticle: Article | null;
-  onSubmit: (values: any) => Promise<void>;
+  onSubmit: (values: z.infer<typeof articleSchema>) => Promise<void>;
 }
 
 export const ArticleFormModal = ({ isOpen, onOpenChange, editingArticle, onSubmit }: ArticleFormModalProps) => {

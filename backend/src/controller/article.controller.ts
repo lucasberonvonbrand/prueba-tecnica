@@ -4,7 +4,13 @@ import { articleService } from '../service/article.service.js';
 import { authMiddleware } from '../middleware/auth.middleware.js';
 import { articleBodySchema, articleQuerySchema } from '../dto/ArticleDto.js';
 
-const articleController = new Hono<{ Variables: { user: any } }>();
+interface AuthUser {
+  id: string;
+  name: string;
+  email: string;
+}
+
+const articleController = new Hono<{ Variables: { user: AuthUser } }>();
 
 articleController.use('*', authMiddleware);
 

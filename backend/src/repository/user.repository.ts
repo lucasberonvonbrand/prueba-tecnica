@@ -37,16 +37,18 @@ export class UserRepository {
 
     const authors = await this.collection.aggregate(pipeline).toArray();
     
-    return authors.map((a: any) => ({
+    return authors.map((a) => ({
       id: a.id || a._id.toString(),
       name: a.name,
       email: a.email,
-      articles: a.articles.map((art: any) => ({
-        id: art._id.toString(),
-        title: art.title,
-        content: art.content,
-        status: art.status || 'PUBLISHED',
-        createdAt: art.createdAt ? new Date(art.createdAt).toISOString() : new Date().toISOString()
+      articles: (a.articles || []).map((art: Record<string, unknown>) => ({
+        id: String(art._id),
+        title: String(art.title || ''),
+        content: String(art.content || ''),
+        coverImageUrl: art.coverImageUrl ? String(art.coverImageUrl) : undefined,
+        authorId: String(art.authorId || a._id.toString()),
+        authorName: String(art.authorName || a.name),
+        createdAt: art.createdAt ? new Date(art.createdAt as string | Date).toISOString() : new Date().toISOString(),
       }))
     }));
   }
