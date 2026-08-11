@@ -22,6 +22,8 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
 function RootComponent() {
   const { isAuthenticated, logout } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+  const isAuthPage = location.pathname === '/auth';
   const isNavigating = useRouterState({ select: (s) => s.status === 'pending' });
   const [isLoggingOut, setIsLoggingOut] = useState(false);
 
@@ -93,6 +95,18 @@ function RootComponent() {
                   onPress={handleLogout}
                 >
                   Cerrar sesión
+                </Button>
+              ) : isAuthPage ? (
+                <Button 
+                  as={Link} 
+                  to="/" 
+                  color="primary" 
+                  variant="bordered" 
+                  size="sm"
+                  className="rounded-full font-bold"
+                  isDisabled={isNavigating || isLoggingOut}
+                >
+                  ← Volver a artículos
                 </Button>
               ) : (
                 <Button 

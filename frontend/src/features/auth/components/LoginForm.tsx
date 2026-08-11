@@ -53,47 +53,56 @@ export const LoginFormComponent = () => {
             }}
             className="flex flex-col gap-4"
           >
-            <form.Field
-              name="email"
-              validators={{
-                onChange: ({ value }) => {
-                  const res = loginSchema.shape.email.safeParse(value);
-                  return res.success ? undefined : res.error.errors[0].message;
-                }
-              }}
-              children={(field) => (
-                <Input
-                  label="Email"
-                  type="email"
-                  placeholder="tu@email.com"
-                  value={field.state.value}
-                  onBlur={field.handleBlur}
-                  onChange={(e) => field.handleChange(e.target.value)}
-                  isInvalid={field.state.meta.isTouched && field.state.meta.errors.length > 0}
-                  errorMessage={field.state.meta.isTouched ? field.state.meta.errors.join(', ') : undefined}
-                />
-              )}
-            />
+            <form.Subscribe
+              selector={(state) => state.isSubmitting}
+              children={(isSubmitting) => (
+                <>
+                  <form.Field
+                    name="email"
+                    validators={{
+                      onChange: ({ value }) => {
+                        const res = loginSchema.shape.email.safeParse(value);
+                        return res.success ? undefined : res.error.errors[0].message;
+                      }
+                    }}
+                    children={(field) => (
+                      <Input
+                        label="Email"
+                        type="email"
+                        placeholder="tu@email.com"
+                        value={field.state.value}
+                        isDisabled={isSubmitting}
+                        onBlur={field.handleBlur}
+                        onChange={(e) => field.handleChange(e.target.value)}
+                        isInvalid={field.state.meta.isTouched && field.state.meta.errors.length > 0}
+                        errorMessage={field.state.meta.isTouched ? field.state.meta.errors.join(', ') : undefined}
+                      />
+                    )}
+                  />
 
-            <form.Field
-              name="password"
-              validators={{
-                onChange: ({ value }) => {
-                  const res = loginSchema.shape.password.safeParse(value);
-                  return res.success ? undefined : res.error.errors[0].message;
-                }
-              }}
-              children={(field) => (
-                <Input
-                  label="Contraseña"
-                  type="password"
-                  placeholder="********"
-                  value={field.state.value}
-                  onBlur={field.handleBlur}
-                  onChange={(e) => field.handleChange(e.target.value)}
-                  isInvalid={field.state.meta.isTouched && field.state.meta.errors.length > 0}
-                  errorMessage={field.state.meta.isTouched ? field.state.meta.errors.join(', ') : undefined}
-                />
+                  <form.Field
+                    name="password"
+                    validators={{
+                      onChange: ({ value }) => {
+                        const res = loginSchema.shape.password.safeParse(value);
+                        return res.success ? undefined : res.error.errors[0].message;
+                      }
+                    }}
+                    children={(field) => (
+                      <Input
+                        label="Contraseña"
+                        type="password"
+                        placeholder="********"
+                        value={field.state.value}
+                        isDisabled={isSubmitting}
+                        onBlur={field.handleBlur}
+                        onChange={(e) => field.handleChange(e.target.value)}
+                        isInvalid={field.state.meta.isTouched && field.state.meta.errors.length > 0}
+                        errorMessage={field.state.meta.isTouched ? field.state.meta.errors.join(', ') : undefined}
+                      />
+                    )}
+                  />
+                </>
               )}
             />
 
