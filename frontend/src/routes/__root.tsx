@@ -5,6 +5,7 @@ import {
   Link,
   useNavigate,
   useRouterState,
+  useLocation,
 } from '@tanstack/react-router'
 import { Navbar, NavbarBrand, NavbarContent, NavbarItem, Button, HeroUIProvider } from '@heroui/react'
 import { useState } from 'react'
