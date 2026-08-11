@@ -1,4 +1,4 @@
-name: Deploy Backend to Render
+name: CI & Deploy Backend
 
 on:
   push:
@@ -18,8 +18,8 @@ jobs:
           deploy_url: ${{ secrets.RENDER_DEPLOY_HOOK_URL }}
         run: |
           if [ -z "$deploy_url" ]; then
-            echo "La variable RENDER_DEPLOY_HOOK_URL no está configurada en los secrets de GitHub."
-            exit 1
+            echo "La variable RENDER_DEPLOY_HOOK_URL no está configurada en los secrets de GitHub. Omitiendo Webhook."
+            exit 0
           fi
           echo "Llamando al Webhook de Render para iniciar el despliegue..."
           curl -X POST -d {} "$deploy_url"

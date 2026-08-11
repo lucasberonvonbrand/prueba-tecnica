@@ -45,12 +45,14 @@ function HomePage() {
   const { data: authors, isLoading: isLoadingAuthors, isError: isErrorAuthors, refetch: refetchAuthors } = useQuery({
     queryKey: ['authors'],
     queryFn: () => getAuthors(),
+    staleTime: 1000 * 60 * 5,
   });
 
   const { data: articlesResult, isFetching, isError: isErrorArticles, refetch: refetchArticles } = useQuery({
     queryKey: ['public-articles', search, page],
     queryFn: () => getPublicArticles(search, page),
     placeholderData: keepPreviousData,
+    staleTime: 1000 * 60 * 5,
   });
 
   let articles = articlesResult?.data || [];
