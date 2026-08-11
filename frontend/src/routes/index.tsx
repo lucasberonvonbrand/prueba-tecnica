@@ -48,23 +48,13 @@ function HomePage() {
     staleTime: 1000 * 60 * 5,
   });
 
-  const { data: articlesResult, isFetching, isError: isErrorArticles, refetch: refetchArticles } = useQuery({
+  const { data: articlesResult, isLoading: isLoadingArticles, isError: isErrorArticles, refetch: refetchArticles } = useQuery({
     queryKey: ['public-articles', search, page],
     queryFn: () => getPublicArticles(search, page),
-    placeholderData: keepPreviousData,
     staleTime: 1000 * 60 * 5,
   });
 
-  let articles = articlesResult?.data || [];
-
-  if (localSearch) {
-    const lowerSearch = localSearch.toLowerCase();
-    articles = articles.filter(article => 
-      article.title.toLowerCase().includes(lowerSearch) ||
-      article.content.toLowerCase().includes(lowerSearch) ||
-      article.authorName.toLowerCase().includes(lowerSearch)
-    );
-  }
+  const articles = articlesResult?.data || [];
 
   const totalPages = Math.ceil((articlesResult?.total || 0) / 5) || 1;
 
@@ -80,7 +70,7 @@ function HomePage() {
             <p className="mb-4">Ocurrió un problema de conexión al intentar obtener los datos.</p>
             <Button color="danger" variant="flat" onPress={() => refetchArticles()}>Reintentar</Button>
           </div>
-        ) : isFetching ? (
+        ) : isLoadingArticles ? (
           <div className="grid gap-6">
             {[...Array(3)].map((_, i) => (
               <Card key={i} shadow="none" className="border-b border-gray-200 rounded-none bg-transparent mb-8 pb-8">
@@ -199,7 +189,7 @@ function HomePage() {
             ) : (
               <div className="flex flex-col gap-3">
                 {authors?.map((author) => (
-                  <Card key={author.id} shadow="sm" className="hover:shadow-md transition-shadow bg-secondary/10 border-none cursor-pointer" isPressable onPress={() => { setLocalSearch(author.name); window.scrollTo({ top: 0, behavior: 'smooth' }); }}>
+                  <Card key={author.id} shadow="sm" className="hover:shadow-md transition-shadow bg-secondary/10 border-none cursor-pointer" isPressable onPress={() => { setLocalSearch(author.name); navigate({ search: (prev) => ({ ...prev, search: author.name, page: 1 }), replace: true }); window.scrollTo({ top: 0, behavior: 'smooth' }); }}>
                     <CardBody className="p-4 flex flex-row items-center justify-between gap-4">
                       <div className="flex-1 text-left">
                         <h4 className="font-serif font-bold text-primary leading-tight break-words">{author.name}</h4>
