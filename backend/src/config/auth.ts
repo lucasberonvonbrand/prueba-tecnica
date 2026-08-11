@@ -5,6 +5,12 @@ import { jwt } from "better-auth/plugins";
 
 export let auth: any;
 
+const defaultOrigins = [
+  "http://localhost:4000",
+  "http://backend:3000",
+  "http://localhost:5173",
+];
+
 export const initAuth = async () => {
   const db = await dbConfig.connect();
 
@@ -17,10 +23,12 @@ export const initAuth = async () => {
     plugins: [jwt({})],
     secret: process.env.BETTER_AUTH_SECRET,
     baseURL: process.env.BETTER_AUTH_URL,
-    trustedOrigins: [
-      "http://localhost:4000",
-      "http://backend:3000",
-      "http://localhost:5173",
-    ],
+    trustedOrigins: (request: Request) => {
+      const origin = request.headers.get("origin");
+      if (!origin) return true;
+      if (defaultOrigins.includes(origin)) return true;
+      if (origin.includes("localhost") || origin.includes(".onrender.com")) return true;
+      return false;
+    },
   });
 };
