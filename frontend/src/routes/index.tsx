@@ -78,7 +78,7 @@ function HomePage() {
             <p className="mb-4">Ocurrió un problema de conexión al intentar obtener los datos.</p>
             <Button color="danger" variant="flat" onPress={() => refetchArticles()}>Reintentar</Button>
           </div>
-        ) : !articlesResult && isFetching ? (
+        ) : isFetching ? (
           <div className="grid gap-6">
             {[...Array(3)].map((_, i) => (
               <Card key={i} shadow="none" className="border-b border-gray-200 rounded-none bg-transparent mb-8 pb-8">
