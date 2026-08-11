@@ -2,12 +2,13 @@ import {
   createRootRouteWithContext,
   Outlet,
   ScrollRestoration,
+  Link,
+  useNavigate,
+  useRouterState,
 } from '@tanstack/react-router'
-import { Navbar, NavbarBrand, NavbarContent, NavbarItem, Button } from '@heroui/react'
-import { Link } from '@tanstack/react-router'
-
-import { HeroUIProvider } from '@heroui/react'
-
+import { Navbar, NavbarBrand, NavbarContent, NavbarItem, Button, HeroUIProvider } from '@heroui/react'
+import { useState } from 'react'
+import { useAuth } from '@/features/auth/hooks/useAuth'
 import type { QueryClient } from '@tanstack/react-query'
 
 interface MyRouterContext {
@@ -18,13 +19,30 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
   component: RootComponent,
 })
 
-import { useAuth } from '@/features/auth/hooks/useAuth'
-
 function RootComponent() {
   const { isAuthenticated, logout } = useAuth();
+  const navigate = useNavigate();
+  const isNavigating = useRouterState({ select: (s) => s.status === 'pending' });
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
+
+  const handleLogout = async () => {
+    try {
+      setIsLoggingOut(true);
+      await logout();
+      navigate({ to: '/' });
+    } catch (error) {
+      console.error('Error al cerrar sesión:', error);
+    } finally {
+      setIsLoggingOut(false);
+    }
+  };
 
   return (
-    <div className="min-h-screen bg-[#FDFBF7] text-foreground font-sans flex flex-col">
+    <div className="min-h-screen bg-[#FDFBF7] text-foreground font-sans flex flex-col relative">
+      {isNavigating && (
+        <div className="fixed top-0 left-0 right-0 h-1 bg-primary animate-pulse z-[100]" />
+      )}
+
       <HeroUIProvider className="flex flex-col flex-grow">
         <Navbar maxWidth="xl" className="bg-[#F2E8D8] py-2 border-b border-[#E0D2BC]">
           <NavbarBrand>
@@ -62,16 +80,29 @@ function RootComponent() {
           <NavbarContent justify="end">
             <NavbarItem>
               {isAuthenticated ? (
-                <button 
-                  onClick={() => logout().then(() => window.location.href = '/')}
-                  className="text-primary font-bold px-4 py-2 rounded-full border border-primary hover:bg-primary hover:text-white transition-all text-sm cursor-pointer"
+                <Button 
+                  color="primary" 
+                  variant="bordered" 
+                  size="sm"
+                  className="rounded-full font-bold"
+                  isLoading={isLoggingOut}
+                  isDisabled={isLoggingOut || isNavigating}
+                  onPress={handleLogout}
                 >
                   Cerrar sesión
-                </button>
+                </Button>
               ) : (
-                <Link to="/auth" className="text-primary font-bold px-4 py-2 rounded-full border border-primary hover:bg-primary hover:text-white transition-all text-sm">
+                <Button 
+                  as={Link} 
+                  to="/auth" 
+                  color="primary" 
+                  variant="bordered" 
+                  size="sm"
+                  className="rounded-full font-bold"
+                  isDisabled={isNavigating || isLoggingOut}
+                >
                   Iniciar sesión
-                </Link>
+                </Button>
               )}
             </NavbarItem>
           </NavbarContent>
