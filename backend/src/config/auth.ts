@@ -23,12 +23,13 @@ export const initAuth = async () => {
     plugins: [jwt({})],
     secret: process.env.BETTER_AUTH_SECRET,
     baseURL: process.env.BETTER_AUTH_URL,
-    trustedOrigins: (request: Request) => {
-      const origin = request.headers.get("origin");
-      if (!origin) return true;
-      if (defaultOrigins.includes(origin)) return true;
-      if (origin.includes("localhost") || origin.includes(".onrender.com")) return true;
-      return false;
+    trustedOrigins: (request?: Request) => {
+      const origin = request?.headers.get("origin");
+      const origins = [...defaultOrigins];
+      if (origin && (origin.includes("localhost") || origin.includes(".onrender.com"))) {
+        origins.push(origin);
+      }
+      return origins;
     },
   });
 };
