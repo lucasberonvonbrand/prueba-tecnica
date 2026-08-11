@@ -61,10 +61,23 @@ function HomePage() {
   const totalPages = Math.ceil((articlesResult?.total || 0) / 5) || 1;
 
   return (
-    <div className="p-8 max-w-7xl mx-auto flex flex-col lg:flex-row gap-12 lg:gap-12">
+    <div className="p-4 sm:p-8 max-w-7xl mx-auto flex flex-col lg:flex-row gap-8 lg:gap-12">
       
       <div className="flex-1 min-w-0 lg:pr-12 lg:border-r lg:border-[#E0D2BC]">
-        <h2 className="text-4xl font-serif font-black mb-8">Últimas Publicaciones</h2>
+        <h2 className="text-3xl sm:text-4xl font-serif font-black mb-6 sm:mb-8">Últimas Publicaciones</h2>
+
+        {/* Buscador Móvil (Visible solo en pantallas chicas < lg) */}
+        <div className="lg:hidden mb-8">
+          <Input
+            size="lg"
+            placeholder="Buscar por palabra clave o autor..."
+            value={localSearch}
+            onChange={(e) => setLocalSearch(e.target.value)}
+            isClearable
+            onClear={() => setLocalSearch('')}
+            className="w-full"
+          />
+        </div>
 
         {isErrorArticles ? (
           <div className="text-center bg-danger-50 text-danger p-8 rounded-2xl max-w-2xl mx-auto">
@@ -149,8 +162,8 @@ function HomePage() {
       <aside className="lg:w-[320px] xl:w-[360px] shrink-0">
         <div className="sticky top-8 space-y-12">
           
-          {/* Buscador */}
-          <div>
+          {/* Buscador Desktop (Oculto en móvil) */}
+          <div className="hidden lg:block">
             <h3 className="font-serif font-bold text-2xl mb-4 text-foreground">Buscador</h3>
             <Input
               size="lg"
