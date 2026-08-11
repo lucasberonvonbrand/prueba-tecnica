@@ -3,7 +3,7 @@ import { z } from 'zod';
 export const articleBodySchema = z.object({
   title: z.string().min(1, 'El título es obligatorio').max(150, 'El título es muy largo'),
   content: z.string().min(1, 'El contenido es obligatorio'),
-  coverImageUrl: z.string().url('URL inválida').optional(),
+  coverImageUrl: z.string().url('URL inválida').or(z.literal('')).optional(),
 });
 
 export type ArticleBodyRequest = z.infer<typeof articleBodySchema>;

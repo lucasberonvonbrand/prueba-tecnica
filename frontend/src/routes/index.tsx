@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate, Link } from '@tanstack/react-router';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQuery, useQueryClient, keepPreviousData } from '@tanstack/react-query';
 import { getAuthors, getPublicArticles } from '@/features/public/services/public.service';
 import { Input, Card, CardBody, Pagination, Skeleton, Button } from '@heroui/react';
 import { useState, useEffect } from 'react';
@@ -53,6 +53,7 @@ function HomePage() {
     queryKey: ['public-articles', search, page],
     queryFn: () => getPublicArticles(search, page),
     staleTime: 1000 * 60 * 5,
+    placeholderData: keepPreviousData,
   });
 
   const articles = articlesResult?.data || [];
@@ -60,9 +61,9 @@ function HomePage() {
   const totalPages = Math.ceil((articlesResult?.total || 0) / 5) || 1;
 
   return (
-    <div className="p-8 max-w-7xl mx-auto flex flex-col lg:flex-row gap-12 lg:gap-16">
+    <div className="p-8 max-w-7xl mx-auto flex flex-col lg:flex-row gap-12 lg:gap-12">
       
-      <div>
+      <div className="flex-1 min-w-0 lg:pr-12 lg:border-r lg:border-[#E0D2BC]">
         <h2 className="text-4xl font-serif font-black mb-8">Últimas Publicaciones</h2>
 
         {isErrorArticles ? (
@@ -113,10 +114,10 @@ function HomePage() {
                       </div>
                     )}
                     <div className="flex-grow flex flex-col justify-center">
-                      <div className="flex items-center gap-2 text-xs font-sans uppercase tracking-wider text-primary font-bold mb-3">
-                        <span>Por: <button onClick={() => { setLocalSearch(article.authorName); window.scrollTo({ top: 0, behavior: 'smooth' }); }} className="hover:underline cursor-pointer focus:outline-none">{article.authorName}</button></span>
+                      <div className="flex items-center gap-2 text-xs font-sans uppercase tracking-wider text-primary font-bold mb-3 flex-wrap">
+                        <span className="truncate max-w-[250px] sm:max-w-xs">Por: <button onClick={() => { setLocalSearch(article.authorName); window.scrollTo({ top: 0, behavior: 'smooth' }); }} className="hover:underline cursor-pointer focus:outline-none" title={article.authorName}>{article.authorName}</button></span>
                         <span>&mdash;</span>
-                        <span className="text-gray-400">{new Date(article.createdAt).toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
+                        <span className="text-gray-400 shrink-0">{new Date(article.createdAt).toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
                       </div>
                       <Link to="/article/$articleId" params={{ articleId: article.id }}>
                         <h3 className="text-3xl md:text-4xl font-serif font-black mb-4 leading-tight text-foreground hover:text-primary transition-colors">{article.title}</h3>
@@ -145,7 +146,7 @@ function HomePage() {
       </div>
 
       {/* BARRA LATERAL: BUSCADOR Y AUTORES */}
-      <aside className="lg:w-1/3 xl:w-1/4">
+      <aside className="lg:w-[320px] xl:w-[360px] shrink-0">
         <div className="sticky top-8 space-y-12">
           
           {/* Buscador */}
@@ -204,11 +205,11 @@ function HomePage() {
                     }}
                     onPress={() => { setLocalSearch(author.name); navigate({ search: (prev) => ({ ...prev, search: author.name, page: 1 }), replace: true }); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
                   >
-                    <CardBody className="p-4 flex flex-row items-center justify-between gap-4">
-                      <div className="flex-1 text-left">
-                        <h4 className="font-serif font-bold text-primary leading-tight break-words">{author.name}</h4>
+                    <CardBody className="p-4 flex flex-row items-center justify-between gap-3 overflow-hidden">
+                      <div className="flex-1 min-w-0 text-left">
+                        <h4 className="font-serif font-bold text-primary leading-tight truncate" title={author.name}>{author.name}</h4>
                       </div>
-                      <div className="flex items-center gap-2 bg-white rounded-full px-4 py-1.5 shadow-sm border border-secondary/10 shrink-0">
+                      <div className="flex items-center gap-2 bg-white rounded-full px-3 py-1.5 shadow-sm border border-secondary/10 shrink-0">
                         <span className="font-black text-primary text-lg leading-none">{author.articles.length}</span>
                         <span className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">Publicaciones</span>
                       </div>

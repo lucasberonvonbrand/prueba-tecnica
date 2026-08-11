@@ -1,4 +1,5 @@
 import { useForm } from '@tanstack/react-form';
+import { useNavigate } from '@tanstack/react-router';
 import { Input, Button, Card, CardHeader, CardBody, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter } from '@heroui/react';
 import { registerSchema } from '../types/auth.schema';
 import { useAuth } from '../hooks/useAuth';
@@ -6,6 +7,7 @@ import { useState } from 'react';
 
 export const RegisterFormComponent = () => {
   const { register } = useAuth();
+  const navigate = useNavigate();
   const [modalState, setModalState] = useState<{isOpen: boolean; title: string; message: string; type: 'error' | 'success'}>({
     isOpen: false,
     title: '',
@@ -42,7 +44,7 @@ export const RegisterFormComponent = () => {
         });
         
         setTimeout(() => {
-          window.location.href = '/dashboard';
+          navigate({ to: '/dashboard' });
         }, 1500);
       } catch (error: any) {
         console.error('Error en el registro', error);
@@ -61,7 +63,7 @@ export const RegisterFormComponent = () => {
   });
 
   return (
-      <Card className="w-full max-w-md mx-auto mt-10">
+      <Card className="w-full max-w-md mx-auto mt-4">
         <CardHeader className="flex flex-col gap-1 items-center">
           <h2 className="text-2xl font-bold">Crear Cuenta</h2>
           <p className="text-sm text-default-500">Regístrate para publicar artículos</p>
@@ -92,8 +94,8 @@ export const RegisterFormComponent = () => {
                   value={field.state.value}
                   onBlur={field.handleBlur}
                   onChange={(e) => field.handleChange(e.target.value)}
-                  isInvalid={field.state.meta.errors.length > 0}
-                  errorMessage={field.state.meta.errors.join(', ')}
+                  isInvalid={field.state.meta.isTouched && field.state.meta.errors.length > 0}
+                  errorMessage={field.state.meta.isTouched ? field.state.meta.errors.join(', ') : undefined}
                 />
               )}
             />
@@ -114,8 +116,8 @@ export const RegisterFormComponent = () => {
                   value={field.state.value}
                   onBlur={field.handleBlur}
                   onChange={(e) => field.handleChange(e.target.value)}
-                  isInvalid={field.state.meta.errors.length > 0}
-                  errorMessage={field.state.meta.errors.join(', ')}
+                  isInvalid={field.state.meta.isTouched && field.state.meta.errors.length > 0}
+                  errorMessage={field.state.meta.isTouched ? field.state.meta.errors.join(', ') : undefined}
                 />
               )}
             />
@@ -136,8 +138,8 @@ export const RegisterFormComponent = () => {
                   value={field.state.value}
                   onBlur={field.handleBlur}
                   onChange={(e) => field.handleChange(e.target.value)}
-                  isInvalid={field.state.meta.errors.length > 0}
-                  errorMessage={field.state.meta.errors.join(', ')}
+                  isInvalid={field.state.meta.isTouched && field.state.meta.errors.length > 0}
+                  errorMessage={field.state.meta.isTouched ? field.state.meta.errors.join(', ') : undefined}
                 />
               )}
             />

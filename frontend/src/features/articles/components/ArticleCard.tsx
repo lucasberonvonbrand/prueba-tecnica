@@ -21,9 +21,9 @@ export const ArticleCard = ({ article, onView, onEdit, onDelete, isDeleting }: A
           )}
         </div>
         <div className="flex gap-2 shrink-0">
-          <Button size="sm" variant="flat" color="secondary" onPress={() => onView(article)}>Ver</Button>
-          <Button size="sm" variant="flat" onPress={() => onEdit(article)}>Editar</Button>
-          <Button size="sm" color="danger" variant="flat" onPress={() => onDelete(article.id)} isLoading={isDeleting}>Eliminar</Button>
+          <Button size="sm" variant="flat" color="primary" onPress={() => onView(article)}>Ver</Button>
+          <Button size="sm" variant="flat" color="primary" onPress={() => onEdit(article)}>Editar</Button>
+          <Button size="sm" variant="solid" color="danger" onPress={() => onDelete(article.id)} isLoading={isDeleting}>Eliminar</Button>
         </div>
       </CardBody>
     </Card>

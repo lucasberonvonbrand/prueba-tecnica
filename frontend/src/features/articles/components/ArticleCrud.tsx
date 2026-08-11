@@ -5,12 +5,14 @@ import { useState } from 'react';
 import { ArticleCard } from './ArticleCard';
 import { ArticleFormModal } from './ArticleFormModal';
 import { ArticleViewModal } from './ArticleViewModal';
+import { ArticleDeleteModal } from './ArticleDeleteModal';
 
 export const ArticleCrud = () => {
   const queryClient = useQueryClient();
   const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
   const [editingArticle, setEditingArticle] = useState<Article | null>(null);
   const [viewingArticle, setViewingArticle] = useState<Article | null>(null);
+  const [deletingArticle, setDeletingArticle] = useState<Article | null>(null);
   const [errorMsg, setErrorMsg] = useState('');
   const [page, setPage] = useState(1);
 
@@ -43,6 +45,7 @@ export const ArticleCrud = () => {
     mutationFn: deleteArticle,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['my-articles'] });
+      setDeletingArticle(null);
     },
   });
 
@@ -56,6 +59,18 @@ export const ArticleCrud = () => {
     } catch (error) {
       console.error(error);
       setErrorMsg('Ocurrió un error al guardar el artículo. Revisa la consola para más detalles.');
+    }
+  };
+
+  const handleConfirmDelete = async () => {
+    if (deletingArticle) {
+      try {
+        await deleteMutation.mutateAsync(deletingArticle.id);
+      } catch (error) {
+        console.error(error);
+        setErrorMsg('Ocurrió un error al eliminar el artículo.');
+        setDeletingArticle(null);
+      }
     }
   };
 
@@ -114,7 +129,7 @@ export const ArticleCrud = () => {
               article={article} 
               onView={setViewingArticle} 
               onEdit={openEdit} 
-              onDelete={deleteMutation.mutate} 
+              onDelete={() => setDeletingArticle(article)} 
               isDeleting={deleteMutation.isPending && deleteMutation.variables === article.id}
             />
           ))}
@@ -144,6 +159,14 @@ export const ArticleCrud = () => {
         onOpenChange={onOpenChange} 
         editingArticle={editingArticle} 
         onSubmit={handleFormSubmit} 
+      />
+
+      {/* Modal de Confirmación de Eliminación */}
+      <ArticleDeleteModal
+        article={deletingArticle}
+        onClose={() => setDeletingArticle(null)}
+        onConfirm={handleConfirmDelete}
+        isDeleting={deleteMutation.isPending}
       />
 
       {/* Modal de Error */}

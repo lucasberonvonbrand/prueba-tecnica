@@ -2,6 +2,7 @@ import { createFileRoute, Link } from '@tanstack/react-router';
 import { useQuery } from '@tanstack/react-query';
 import { getArticleById } from '../../features/public/services/public.service';
 import { Button, Skeleton } from '@heroui/react';
+import { useEffect } from 'react';
 
 export const Route = createFileRoute('/article/$articleId')({
   component: ArticleDetailComponent,
@@ -9,6 +10,10 @@ export const Route = createFileRoute('/article/$articleId')({
 
 function ArticleDetailComponent() {
   const { articleId } = Route.useParams();
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [articleId]);
 
   const { data: article, isLoading, isError, refetch } = useQuery({
     queryKey: ['public-article', articleId],
@@ -107,6 +112,28 @@ function ArticleDetailComponent() {
           {article.content}
         </p>
       </div>
+
+      <footer className="mt-16 pt-8 border-t border-gray-200 flex flex-col sm:flex-row justify-between items-center gap-4">
+        <Button 
+          as={Link} 
+          to="/" 
+          variant="flat" 
+          color="primary"
+          size="lg"
+          className="rounded-full font-medium w-full sm:w-auto"
+        >
+          &larr; Volver a las publicaciones
+        </Button>
+
+        <Button
+          variant="light"
+          color="primary"
+          className="font-medium"
+          onPress={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+        >
+          Subir arriba &uarr;
+        </Button>
+      </footer>
     </article>
   );
 }

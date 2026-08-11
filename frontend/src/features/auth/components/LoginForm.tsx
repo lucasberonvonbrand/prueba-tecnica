@@ -1,4 +1,5 @@
 import { useForm } from '@tanstack/react-form';
+import { useNavigate } from '@tanstack/react-router';
 import { Input, Button, Card, CardHeader, CardBody, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter } from '@heroui/react';
 import { loginSchema } from '../types/auth.schema';
 import { useAuth } from '../hooks/useAuth';
@@ -6,6 +7,7 @@ import { useState } from 'react';
 
 export const LoginFormComponent = () => {
   const { login } = useAuth();
+  const navigate = useNavigate();
   const [errorMsg, setErrorMsg] = useState('');
 
   const form = useForm({
@@ -23,7 +25,7 @@ export const LoginFormComponent = () => {
       try {
         await login(value);
         console.log('Login exitoso');
-        window.location.href = '/dashboard';
+        await navigate({ to: '/dashboard' });
       } catch (error: any) {
         console.error('Error en el login', error);
         let errorTxt = error.message || error.statusText || 'Credenciales incorrectas';
@@ -36,7 +38,7 @@ export const LoginFormComponent = () => {
   });
 
   return (
-      <Card className="w-full max-w-md mx-auto mt-10">
+      <Card className="w-full max-w-md mx-auto mt-4">
         <CardHeader className="flex flex-col gap-1 items-center">
           <h2 className="text-2xl font-bold">Iniciar Sesión</h2>
           <p className="text-sm text-default-500">Ingresa tus credenciales para continuar</p>
@@ -67,8 +69,8 @@ export const LoginFormComponent = () => {
                   value={field.state.value}
                   onBlur={field.handleBlur}
                   onChange={(e) => field.handleChange(e.target.value)}
-                  isInvalid={field.state.meta.errors.length > 0}
-                  errorMessage={field.state.meta.errors.join(', ')}
+                  isInvalid={field.state.meta.isTouched && field.state.meta.errors.length > 0}
+                  errorMessage={field.state.meta.isTouched ? field.state.meta.errors.join(', ') : undefined}
                 />
               )}
             />
@@ -89,8 +91,8 @@ export const LoginFormComponent = () => {
                   value={field.state.value}
                   onBlur={field.handleBlur}
                   onChange={(e) => field.handleChange(e.target.value)}
-                  isInvalid={field.state.meta.errors.length > 0}
-                  errorMessage={field.state.meta.errors.join(', ')}
+                  isInvalid={field.state.meta.isTouched && field.state.meta.errors.length > 0}
+                  errorMessage={field.state.meta.isTouched ? field.state.meta.errors.join(', ') : undefined}
                 />
               )}
             />
