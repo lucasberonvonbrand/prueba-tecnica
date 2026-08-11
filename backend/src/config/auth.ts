@@ -11,6 +11,8 @@ const defaultOrigins = [
   "http://localhost:5173",
 ];
 
+const isProd = process.env.NODE_ENV === "production" || !!process.env.RENDER;
+
 export const initAuth = async () => {
   const db = await dbConfig.connect();
 
@@ -30,6 +32,12 @@ export const initAuth = async () => {
         origins.push(origin);
       }
       return origins;
+    },
+    advanced: {
+      defaultCookieAttributes: {
+        sameSite: isProd ? "none" : "lax",
+        secure: isProd,
+      },
     },
   });
 };
