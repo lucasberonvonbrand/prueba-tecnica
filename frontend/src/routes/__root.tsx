@@ -39,8 +39,11 @@ function RootComponent() {
 
   return (
     <div className="min-h-screen bg-[#FDFBF7] text-foreground font-sans flex flex-col relative">
-      {isNavigating && (
-        <div className="fixed top-0 left-0 right-0 h-1 bg-primary animate-pulse z-[100]" />
+      {(isNavigating || isLoggingOut) && (
+        <>
+          <div className="fixed top-0 left-0 right-0 h-1.5 bg-primary animate-pulse z-[100]" />
+          <div className="fixed inset-0 z-[99] cursor-wait bg-black/5 backdrop-blur-[1px] transition-all" />
+        </>
       )}
 
       <HeroUIProvider className="flex flex-col flex-grow">
