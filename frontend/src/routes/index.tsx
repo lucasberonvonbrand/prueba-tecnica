@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate, Link } from '@tanstack/react-router';
-import { useQuery, keepPreviousData } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { getAuthors, getPublicArticles } from '@/features/public/services/public.service';
 import { Input, Card, CardBody, Pagination, Skeleton, Button } from '@heroui/react';
 import { useState, useEffect } from 'react';
@@ -22,6 +22,7 @@ export const Route = createFileRoute('/')({
 });
 
 function HomePage() {
+  const queryClient = useQueryClient();
   const { search = '', page = 1 } = Route.useSearch();
   const navigate = useNavigate({ from: Route.fullPath });
 
@@ -189,7 +190,20 @@ function HomePage() {
             ) : (
               <div className="flex flex-col gap-3">
                 {authors?.map((author) => (
-                  <Card key={author.id} shadow="sm" className="hover:shadow-md transition-shadow bg-secondary/10 border-none cursor-pointer" isPressable onPress={() => { setLocalSearch(author.name); navigate({ search: (prev) => ({ ...prev, search: author.name, page: 1 }), replace: true }); window.scrollTo({ top: 0, behavior: 'smooth' }); }}>
+                  <Card 
+                    key={author.id} 
+                    shadow="sm" 
+                    className="hover:shadow-md transition-shadow bg-secondary/10 border-none cursor-pointer" 
+                    isPressable 
+                    onMouseEnter={() => {
+                      queryClient.prefetchQuery({
+                        queryKey: ['public-articles', author.name, 1],
+                        queryFn: () => getPublicArticles(author.name, 1),
+                        staleTime: 1000 * 60 * 5,
+                      });
+                    }}
+                    onPress={() => { setLocalSearch(author.name); navigate({ search: (prev) => ({ ...prev, search: author.name, page: 1 }), replace: true }); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+                  >
                     <CardBody className="p-4 flex flex-row items-center justify-between gap-4">
                       <div className="flex-1 text-left">
                         <h4 className="font-serif font-bold text-primary leading-tight break-words">{author.name}</h4>
