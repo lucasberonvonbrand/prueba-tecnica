@@ -9,6 +9,5 @@ export const registerSchema = loginSchema.extend({
   name: z.string().min(2, 'El nombre debe tener al menos 2 caracteres'),
 });
 
-// Inferimos los tipos (Similar a las interfaces de Angular)
 export type LoginForm = z.infer<typeof loginSchema>;
 export type RegisterForm = z.infer<typeof registerSchema>;

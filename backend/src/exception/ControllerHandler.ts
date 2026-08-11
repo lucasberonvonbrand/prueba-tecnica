@@ -3,7 +3,6 @@ import { ApiError } from './ApiError.js';
 import { ZodError } from 'zod';
 
 export const controllerHandler: ErrorHandler = (err, c) => {
-  // Manejo de errores personalizados (ApiError)
   if (err instanceof ApiError) {
     return c.json(
       {
@@ -11,11 +10,10 @@ export const controllerHandler: ErrorHandler = (err, c) => {
         httpStatus: err.status,
         timestamp: err.timestamp,
       },
-      err.status as any // type casting to StatusCode
+      err.status as any
     );
   }
 
-  // Manejo de errores de validación (Zod)
   if (err instanceof ZodError) {
     let errorMessage = '';
     
@@ -37,8 +35,6 @@ export const controllerHandler: ErrorHandler = (err, c) => {
     );
   }
 
-  // Manejo de errores genéricos de @hono/zod-validator
-  // A veces el validator tira su propia excepción, intentamos capturarla
   if (err.name === 'Error' && err.message.includes('Validation')) {
      return c.json(
       {
@@ -50,7 +46,6 @@ export const controllerHandler: ErrorHandler = (err, c) => {
     );
   }
 
-  // Errores no controlados (500)
   console.error('Unhandled Exception:', err);
   return c.json(
     {

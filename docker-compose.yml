@@ -19,6 +19,8 @@ services:
     container_name: gestor_frontend
     environment:
       - API_URL=http://backend:3000/api
+      - BETTER_AUTH_SECRET=super-secret-key-for-dev
+      - BETTER_AUTH_URL=http://localhost:3000
     ports:
       - "4000:80"
     depends_on:
@@ -38,6 +40,18 @@ services:
       - BETTER_AUTH_URL=http://localhost:3000
     depends_on:
       - mongodb
+
+  seed:
+    image: node:20-alpine
+    container_name: gestor_seed
+    volumes:
+      - ./seed.js:/usr/src/app/seed.js
+    working_dir: /usr/src/app
+    environment:
+      - API_URL=http://backend:3000/api
+    depends_on:
+      - backend
+    command: node seed.js
 
 volumes:
   mongodb_data:

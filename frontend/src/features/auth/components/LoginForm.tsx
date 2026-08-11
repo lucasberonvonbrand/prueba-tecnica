@@ -27,7 +27,7 @@ export const LoginFormComponent = () => {
       } catch (error: any) {
         console.error('Error en el login', error);
         let errorTxt = error.message || error.statusText || 'Credenciales incorrectas';
-        if (errorTxt.includes('Invalid email or password')) {
+        if (errorTxt.toLowerCase().includes('invalid email or password') || errorTxt.toLowerCase().includes('not allowed')) {
           errorTxt = 'Email o contraseña incorrectos';
         }
         setErrorMsg(errorTxt);

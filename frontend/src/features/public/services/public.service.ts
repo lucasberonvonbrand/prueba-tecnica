@@ -31,9 +31,14 @@ export interface PublicArticle {
   createdAt: string;
 }
 
-export const getPublicArticles = async (search: string, page = 1, limit = 10): Promise<{ data: PublicArticle[]; total: number }> => {
+export const getPublicArticles = async (search = '', page = 1, limit = 5): Promise<{ data: PublicArticle[]; total: number }> => {
   const { data } = await api.get<{ data: PublicArticle[]; total: number }>('/public/articles', {
     params: { search, page, limit }
   });
+  return data;
+};
+
+export const getArticleById = async (id: string): Promise<PublicArticle> => {
+  const { data } = await api.get<PublicArticle>(`/public/articles/${id}`);
   return data;
 };

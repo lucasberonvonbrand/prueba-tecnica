@@ -1,14 +1,11 @@
 import {
-  HeadContent,
-  Scripts,
   createRootRouteWithContext,
+  Outlet,
 } from '@tanstack/react-router'
-import { Navbar, NavbarBrand, NavbarContent, NavbarItem, Link as HeroLink } from '@heroui/react'
+import { Navbar, NavbarBrand, NavbarContent, NavbarItem } from '@heroui/react'
 import { Link } from '@tanstack/react-router'
 
 import { HeroUIProvider } from '@heroui/react'
-
-import appCss from '../styles.css?url'
 
 import type { QueryClient } from '@tanstack/react-query'
 
@@ -17,67 +14,70 @@ interface MyRouterContext {
 }
 
 export const Route = createRootRouteWithContext<MyRouterContext>()({
-  head: () => ({
-    meta: [
-      {
-        charSet: 'utf-8',
-      },
-      {
-        name: 'viewport',
-        content: 'width=device-width, initial-scale=1',
-      },
-      {
-        title: 'TanStack Start Starter',
-      },
-    ],
-    links: [
-      {
-        rel: 'stylesheet',
-        href: appCss,
-      },
-    ],
-  }),
-  shellComponent: RootDocument,
+  component: RootComponent,
 })
 
-function RootDocument({ children }: { children: React.ReactNode }) {
+import { useAuth } from '@/features/auth/hooks/useAuth'
+
+function RootComponent() {
+  const { isAuthenticated, logout } = useAuth();
+
   return (
-    <html lang="en">
-      <head>
-        <HeadContent />
-      </head>
-      <body className="min-h-screen bg-gray-50 text-gray-900">
-        <HeroUIProvider>
-          <Navbar maxWidth="xl" isBordered>
-            <NavbarBrand>
-              <Link to="/" className="font-bold text-inherit text-xl">GestorArtículos</Link>
-            </NavbarBrand>
-            <NavbarContent className="sm:flex gap-4" justify="center">
+    <div className="min-h-screen bg-background text-foreground font-sans flex flex-col">
+      <HeroUIProvider className="flex flex-col flex-grow">
+        <Navbar maxWidth="xl" isBordered className="py-2">
+          <NavbarBrand>
+            <Link to="/" className="font-serif font-black text-primary text-3xl tracking-tight">El Periódico.</Link>
+          </NavbarBrand>
+          
+          <NavbarContent className="sm:flex gap-8" justify="center">
+            <NavbarItem>
+              <Link to="/" className="text-foreground hover:text-primary transition-colors font-medium">
+                Artículos
+              </Link>
+            </NavbarItem>
+            {isAuthenticated && (
               <NavbarItem>
-                <Link to="/" className="text-foreground hover:text-primary transition-colors">
-                  Inicio
+                <Link to="/dashboard" className="text-foreground hover:text-primary transition-colors font-medium">
+                  Mi Dashboard
                 </Link>
               </NavbarItem>
-              <NavbarItem>
-                <Link to="/dashboard" className="text-foreground hover:text-primary transition-colors">
-                  Dashboard
+            )}
+          </NavbarContent>
+          
+          <NavbarContent justify="end">
+            <NavbarItem>
+              {isAuthenticated ? (
+                <button 
+                  onClick={() => logout().then(() => window.location.href = '/')} 
+                  className="text-gray-500 hover:text-primary font-medium transition-colors"
+                >
+                  Cerrar sesión
+                </button>
+              ) : (
+                <Link to="/auth" className="text-primary font-bold px-4 py-2 rounded-full border border-primary hover:bg-primary hover:text-white transition-all">
+                  Iniciar sesión
                 </Link>
-              </NavbarItem>
-            </NavbarContent>
-            <NavbarContent justify="end">
-              <NavbarItem>
-                <Link to="/auth" className="text-primary font-medium">
-                  Login
-                </Link>
-              </NavbarItem>
-            </NavbarContent>
-          </Navbar>
-          <main className="min-h-[calc(100vh-64px)]">
-            {children}
-          </main>
-        </HeroUIProvider>
-        <Scripts />
-      </body>
-    </html>
+              )}
+            </NavbarItem>
+          </NavbarContent>
+        </Navbar>
+        
+        <main className="flex-grow">
+          <Outlet />
+        </main>
+
+        <footer className="w-full border-t border-gray-200 py-8 mt-12 bg-secondary/10">
+          <div className="max-w-5xl mx-auto px-8 flex flex-col md:flex-row justify-between items-center gap-4">
+            <div className="font-serif font-black text-xl text-primary">El Periódico.</div>
+            <p className="text-gray-500 text-sm">© {new Date().getFullYear()} Creado para la prueba técnica.</p>
+            <div className="flex gap-4 text-sm text-gray-500">
+              <Link to="/" className="hover:text-primary transition-colors">Privacidad</Link>
+              <Link to="/" className="hover:text-primary transition-colors">Términos</Link>
+            </div>
+          </div>
+        </footer>
+      </HeroUIProvider>
+    </div>
   )
 }

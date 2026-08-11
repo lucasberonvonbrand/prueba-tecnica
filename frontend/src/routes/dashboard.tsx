@@ -5,31 +5,34 @@ import { useNavigate } from '@tanstack/react-router';
 import { ArticleCrud } from '@/features/articles/components/ArticleCrud';
 
 export const Route = createFileRoute('/dashboard')({
+  beforeLoad: async () => {
+    try {
+      const { data: session } = await authClient.getSession();
+      if (!session) {
+        throw redirect({
+          to: '/auth',
+        });
+      }
+    } catch (error) {
+      if (error instanceof Response || (error as any)?.status === 302) {
+        throw error;
+      }
+      throw redirect({
+        to: '/auth',
+      });
+    }
+  },
   component: DashboardPage,
 });
 
 function DashboardPage() {
-  const { data: session, isPending } = authClient.useSession();
+  const { data: session } = authClient.useSession();
   const navigate = useNavigate();
-  
-  // Realizamos la validación de sesión exclusivamente en el cliente 
-  // para que el navegador adjunte automáticamente la Cookie al backend.
-  if (typeof window !== 'undefined' && !isPending && !session) {
-    navigate({ to: '/auth' });
-  }
 
   const handleLogout = async () => {
     await authClient.signOut();
     navigate({ to: '/auth' });
   };
-
-  if (isPending) {
-    return <div className="p-8 text-center text-gray-500">Verificando sesión...</div>;
-  }
-
-  if (!session) {
-    return null; // El hook de navegación ya se encarga de redirigir
-  }
 
   return (
     <div className="p-8 max-w-4xl mx-auto">

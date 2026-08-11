@@ -6,10 +6,8 @@ import { articleBodySchema, articleQuerySchema } from '../dto/ArticleDto.js';
 
 const articleController = new Hono<{ Variables: { user: any } }>();
 
-// Proteger todas las rutas de este controlador
 articleController.use('*', authMiddleware);
 
-// Crear artículo
 articleController.post('/', zValidator('json', articleBodySchema), async (c) => {
   const user = c.get('user');
   const body = c.req.valid('json');
@@ -18,7 +16,6 @@ articleController.post('/', zValidator('json', articleBodySchema), async (c) => 
   return c.json(article, 201);
 });
 
-// Obtener artículos propios
 articleController.get('/', zValidator('query', articleQuerySchema), async (c) => {
   const user = c.get('user');
   const { page, limit } = c.req.valid('query');
@@ -27,7 +24,6 @@ articleController.get('/', zValidator('query', articleQuerySchema), async (c) =>
   return c.json(result);
 });
 
-// Editar artículo propio
 articleController.put('/:id', zValidator('json', articleBodySchema.partial()), async (c) => {
   const user = c.get('user');
   const id = c.req.param('id');
@@ -37,7 +33,6 @@ articleController.put('/:id', zValidator('json', articleBodySchema.partial()), a
   return c.json(article);
 });
 
-// Eliminar artículo propio
 articleController.delete('/:id', async (c) => {
   const user = c.get('user');
   const id = c.req.param('id');

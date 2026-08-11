@@ -9,7 +9,6 @@ export const authMiddleware = createMiddleware(async (c, next) => {
     throw new UnauthorizedException('Debes iniciar sesión para acceder a este recurso');
   }
 
-  // Guardamos el usuario en el contexto de Hono
   c.set('user', session.user);
   await next();
 });

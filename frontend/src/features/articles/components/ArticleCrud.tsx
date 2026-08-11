@@ -1,8 +1,10 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { useForm } from '@tanstack/react-form';
-import { Button, Input, Textarea, Select, SelectItem, Card, CardBody, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure, Pagination } from '@heroui/react';
+import { Button, Card, CardBody, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure, Pagination, Skeleton } from '@heroui/react';
 import { getMyArticles, createArticle, updateArticle, deleteArticle, type Article } from '../services/article.service';
 import { useState } from 'react';
+import { ArticleCard } from './ArticleCard';
+import { ArticleFormModal } from './ArticleFormModal';
+import { ArticleViewModal } from './ArticleViewModal';
 
 export const ArticleCrud = () => {
   const queryClient = useQueryClient();
@@ -12,14 +14,14 @@ export const ArticleCrud = () => {
   const [errorMsg, setErrorMsg] = useState('');
   const [page, setPage] = useState(1);
 
-  const { data: queryResult, isLoading } = useQuery({
+  const { data: queryResult, isLoading, isError, refetch } = useQuery({
     queryKey: ['my-articles', page],
     queryFn: () => getMyArticles(page),
   });
 
   const articles = queryResult?.data || [];
   const total = queryResult?.total || 0;
-  const totalPages = Math.ceil(total / 10) || 1;
+  const totalPages = Math.ceil(total / 5) || 1;
 
   const createMutation = useMutation({
     mutationFn: createArticle,
@@ -44,38 +46,26 @@ export const ArticleCrud = () => {
     },
   });
 
-  const form = useForm({
-    defaultValues: {
-      title: editingArticle?.title || '',
-      content: editingArticle?.content || '',
-      coverImageUrl: editingArticle?.coverImageUrl || '',
-    },
-    onSubmit: async ({ value }) => {
-      try {
-        if (editingArticle) {
-          await updateMutation.mutateAsync({ id: editingArticle.id, payload: value });
-        } else {
-          await createMutation.mutateAsync(value);
-        }
-      } catch (error) {
-        console.error(error);
-        setErrorMsg('Ocurrió un error al guardar el artículo. Revisa la consola para más detalles.');
+  const handleFormSubmit = async (value: any) => {
+    try {
+      if (editingArticle) {
+        await updateMutation.mutateAsync({ id: editingArticle.id, payload: value });
+      } else {
+        await createMutation.mutateAsync(value);
       }
-    },
-  });
+    } catch (error) {
+      console.error(error);
+      setErrorMsg('Ocurrió un error al guardar el artículo. Revisa la consola para más detalles.');
+    }
+  };
 
   const openCreate = () => {
     setEditingArticle(null);
-    form.reset();
     onOpen();
   };
 
   const openEdit = (article: Article) => {
     setEditingArticle(article);
-    form.reset();
-    form.setFieldValue('title', article.title);
-    form.setFieldValue('content', article.content);
-    form.setFieldValue('coverImageUrl', article.coverImageUrl || '');
     onOpen();
   };
 
@@ -86,29 +76,47 @@ export const ArticleCrud = () => {
         <Button color="primary" onPress={openCreate}>Crear Artículo</Button>
       </div>
 
-      {isLoading ? (
-        <p>Cargando artículos...</p>
-      ) : articles?.length === 0 ? (
-        <p className="text-gray-500">No tienes artículos todavía. ¡Crea uno!</p>
-      ) : (
+      {isError ? (
+        <div className="text-center bg-danger-50 text-danger p-8 rounded-2xl">
+          <p className="mb-4 font-bold">Ocurrió un error al cargar tus artículos.</p>
+          <Button color="danger" variant="flat" onPress={() => refetch()}>Reintentar</Button>
+        </div>
+      ) : isLoading ? (
         <div className="grid gap-4">
-          {articles?.map((article) => (
-            <Card key={article.id}>
-              <CardBody className="flex flex-row justify-between items-center">
-                <div>
-                  <h3 className="font-bold">{article.title}</h3>
-                  <p className="text-sm text-gray-500 truncate max-w-xl mb-2">{article.content}</p>
-                  {article.coverImageUrl && (
-                    <img src={article.coverImageUrl} alt={article.title} className="w-24 h-24 object-cover rounded mt-2 mb-2" />
-                  )}
+          {[...Array(3)].map((_, i) => (
+            <Card key={i}>
+              <CardBody className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                <div className="flex-1 w-full space-y-2">
+                  <Skeleton className="w-1/3 h-6 rounded-lg" />
+                  <Skeleton className="w-full h-4 rounded-full" />
                 </div>
-                <div className="flex gap-2">
-                  <Button size="sm" variant="flat" color="secondary" onPress={() => setViewingArticle(article)}>Ver</Button>
-                  <Button size="sm" variant="flat" onPress={() => openEdit(article)}>Editar</Button>
-                  <Button size="sm" color="danger" variant="flat" onPress={() => deleteMutation.mutate(article.id)} isLoading={deleteMutation.isPending}>Eliminar</Button>
+                <div className="flex gap-2 shrink-0">
+                  <Skeleton className="w-16 h-8 rounded-lg" />
+                  <Skeleton className="w-16 h-8 rounded-lg" />
+                  <Skeleton className="w-20 h-8 rounded-lg" />
                 </div>
               </CardBody>
             </Card>
+          ))}
+        </div>
+      ) : articles?.length === 0 ? (
+        <div className="text-center bg-gray-50 p-12 rounded-3xl mt-8">
+          <div className="text-6xl mb-4">✍️</div>
+          <h3 className="text-2xl font-bold mb-2">Aún no has escrito nada</h3>
+          <p className="text-gray-500 mb-6">Comparte tus ideas con el mundo creando tu primer artículo.</p>
+          <Button color="primary" size="lg" onPress={openCreate}>Crear mi primer artículo</Button>
+        </div>
+      ) : (
+        <div className="grid gap-4">
+          {articles?.map((article) => (
+            <ArticleCard 
+              key={article.id} 
+              article={article} 
+              onView={setViewingArticle} 
+              onEdit={openEdit} 
+              onDelete={deleteMutation.mutate} 
+              isDeleting={deleteMutation.isPending && deleteMutation.variables === article.id}
+            />
           ))}
         </div>
       )}
@@ -125,97 +133,18 @@ export const ArticleCrud = () => {
       )}
 
       {/* Modal de Detalle */}
-      <Modal isOpen={!!viewingArticle} onClose={() => setViewingArticle(null)}>
-        <ModalContent>
-          {() => (
-            <>
-              <ModalHeader>Detalle del Artículo</ModalHeader>
-              <ModalBody>
-                {viewingArticle && (
-                  <div className="space-y-4">
-                    <h3 className="text-2xl font-bold">{viewingArticle.title}</h3>
-                    <div className="flex justify-between text-sm text-gray-500">
-                      <span>Por: {viewingArticle.authorName}</span>
-                      <span>{new Date(viewingArticle.createdAt).toLocaleDateString()}</span>
-                    </div>
-                    {viewingArticle.coverImageUrl && (
-                      <img src={viewingArticle.coverImageUrl} alt={viewingArticle.title} className="w-full max-h-60 object-cover rounded" />
-                    )}
-                    <p className="whitespace-pre-wrap">{viewingArticle.content}</p>
-                  </div>
-                )}
-              </ModalBody>
-              <ModalFooter>
-                <Button color="primary" onPress={() => setViewingArticle(null)}>Cerrar</Button>
-              </ModalFooter>
-            </>
-          )}
-        </ModalContent>
-      </Modal>
+      <ArticleViewModal 
+        article={viewingArticle} 
+        onClose={() => setViewingArticle(null)} 
+      />
 
       {/* Modal de Creación/Edición */}
-      <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
-        <ModalContent>
-          {(onClose) => (
-            <>
-              <ModalHeader>{editingArticle ? 'Editar Artículo' : 'Crear Artículo'}</ModalHeader>
-              <ModalBody>
-                <form.Field name="title">
-                  {(field) => (
-                    <Input
-                      label="Título"
-                      value={field.state.value}
-                      onChange={(e) => field.handleChange(e.target.value)}
-                      isInvalid={field.state.meta.errors.length > 0}
-                      errorMessage={field.state.meta.errors.join(', ')}
-                      isRequired
-                    />
-                  )}
-                </form.Field>
-                <form.Field name="content">
-                  {(field) => (
-                    <Textarea
-                      label="Contenido"
-                      value={field.state.value}
-                      onChange={(e) => field.handleChange(e.target.value)}
-                      isInvalid={field.state.meta.errors.length > 0}
-                      errorMessage={field.state.meta.errors.join(', ')}
-                      isRequired
-                    />
-                  )}
-                </form.Field>
-                <form.Field name="coverImageUrl">
-                  {(field) => (
-                    <Input
-                      label="URL de imagen de portada (opcional)"
-                      value={field.state.value}
-                      onChange={(e) => field.handleChange(e.target.value)}
-                      isInvalid={field.state.meta.errors.length > 0}
-                      errorMessage={field.state.meta.errors.join(', ')}
-                    />
-                  )}
-                </form.Field>
-              </ModalBody>
-              <ModalFooter>
-                <Button color="danger" variant="light" onPress={onClose}>Cancelar</Button>
-                <form.Subscribe
-                  selector={(state) => [state.canSubmit, state.isSubmitting]}
-                  children={([canSubmit, isSubmitting]) => (
-                    <Button 
-                      color="primary" 
-                      onPress={() => form.handleSubmit()} 
-                      isDisabled={!canSubmit} 
-                      isLoading={isSubmitting as boolean}
-                    >
-                      Guardar
-                    </Button>
-                  )}
-                />
-              </ModalFooter>
-            </>
-          )}
-        </ModalContent>
-      </Modal>
+      <ArticleFormModal 
+        isOpen={isOpen} 
+        onOpenChange={onOpenChange} 
+        editingArticle={editingArticle} 
+        onSubmit={handleFormSubmit} 
+      />
 
       {/* Modal de Error */}
       <Modal isOpen={!!errorMsg} onClose={() => setErrorMsg('')}>

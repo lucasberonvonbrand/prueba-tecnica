@@ -31,8 +31,6 @@ class DatabaseConfig {
           console.log(`Conectado exitosamente a MongoDB: ${dbName}`);
           return this.db;
         } catch (error: any) {
-          console.error(`Error conectando a MongoDB (intento ${i+1}/10):`, error.message);
-          // Esperamos 2 segundos antes del siguiente intento
           await new Promise(resolve => setTimeout(resolve, 2000));
         }
       }

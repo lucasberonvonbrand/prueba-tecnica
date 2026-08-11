@@ -3,11 +3,10 @@ import type { AuthorResponse } from "../dto/AuthorDto.ts";
 
 export class UserRepository {
   private get collection() {
-    return dbConfig.getDb().collection("user"); // Better Auth uses 'user' by default
+    return dbConfig.getDb().collection("user");
   }
 
   async getAuthorsWithArticleCount(): Promise<AuthorResponse[]> {
-    // Pipeline de agregación: buscar usuarios y contar sus artículos
     const pipeline = [
       {
         $addFields: {

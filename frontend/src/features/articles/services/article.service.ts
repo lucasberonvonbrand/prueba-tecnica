@@ -11,7 +11,7 @@ export interface Article {
   authorId: string;
 }
 
-export const getMyArticles = async (page = 1, limit = 10): Promise<{ data: Article[]; total: number }> => {
+export const getMyArticles = async (page = 1, limit = 5): Promise<{ data: Article[]; total: number }> => {
   const { data } = await api.get<{ data: Article[]; total: number }>('/articles', {
     params: { page, limit }
   });

@@ -43,7 +43,7 @@ export class ArticleRepository {
   async update(id: string, updateData: Partial<ArticleDocument>): Promise<boolean> {
     if (!ObjectId.isValid(id)) return false;
     const result = await this.collection.updateOne({ _id: new ObjectId(id) }, { $set: updateData });
-    return result.modifiedCount > 0;
+    return result.matchedCount > 0;
   }
 
   async delete(id: string): Promise<boolean> {

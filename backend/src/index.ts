@@ -13,33 +13,27 @@ dotenv.config();
 
 const app = new Hono();
 
-// Middlewares globales
 app.use('*', logger());
 app.use('*', cors({
   origin: (origin) => {
-    // Permitir localhost para desarrollo y render.com para producción
     if (origin && (origin.includes('localhost') || origin.includes('.onrender.com'))) {
       return origin;
     }
-    return 'http://localhost:5173'; // Fallback
+    return 'http://localhost:5173';
   },
   credentials: true,
 }));
 
-// Manejador global de excepciones
 app.onError(controllerHandler);
 
-// Rutas
 app.route('/api/auth', authController);
 app.route('/api/articles', articleController);
 app.route('/api/public', publicController);
 
-// Health check
 app.get('/health', (c) => c.text('OK'));
 
 const port = Number(process.env.PORT) || 3000;
 
-// Inicializar Auth y arrancar el servidor
 initAuth().then(() => {
   console.log(`Servidor Hono iniciado en el puerto ${port}`);
   serve({
