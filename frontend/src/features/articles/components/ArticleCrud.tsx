@@ -29,6 +29,8 @@ export const ArticleCrud = () => {
     mutationFn: createArticle,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['my-articles'] });
+      queryClient.invalidateQueries({ queryKey: ['public-articles'] });
+      queryClient.invalidateQueries({ queryKey: ['authors'] });
       onClose();
     },
   });
@@ -37,6 +39,8 @@ export const ArticleCrud = () => {
     mutationFn: (data: { id: string; payload: any }) => updateArticle(data.id, data.payload),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['my-articles'] });
+      queryClient.invalidateQueries({ queryKey: ['public-articles'] });
+      queryClient.invalidateQueries({ queryKey: ['authors'] });
       onClose();
     },
   });
@@ -45,6 +49,8 @@ export const ArticleCrud = () => {
     mutationFn: deleteArticle,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['my-articles'] });
+      queryClient.invalidateQueries({ queryKey: ['public-articles'] });
+      queryClient.invalidateQueries({ queryKey: ['authors'] });
       setDeletingArticle(null);
     },
   });
