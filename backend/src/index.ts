@@ -30,6 +30,7 @@ app.route('/api/auth', authController);
 app.route('/api/articles', articleController);
 app.route('/api/public', publicController);
 
+app.get('/', (c) => c.text('OK'));
 app.get('/health', (c) => c.text('OK'));
 
 const port = Number(process.env.PORT) || 3000;
